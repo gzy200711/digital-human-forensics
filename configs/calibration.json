@@ -1,0 +1,17 @@
+{
+  "version": "2026-09-quantile-v2",
+  "method": "temperature",
+  "temperature": 1.35,
+  "bias": 0.0,
+  "thresholds": {
+    "trusted_max": 0.3,
+    "suspect_min": 0.7,
+    "method": "quantile",
+    "trusted_quantile": 0.25,
+    "suspect_quantile": 0.75,
+    "calibration_count": null,
+    "real_negative_count": null,
+    "notes": "bootstrap 分位数占位值；必须在内部评测集上重新计算。"
+  },
+  "notes": "占位校准参数：偏移项固定为 0，灰区阈值按分位数确定。必须用内部评测集重新拟合后替换，不能把该版本用于生产发布。"
+}

@@ -1,0 +1,294 @@
+{
+  "$defs": {
+    "AuthorizationStatus": {
+      "enum": [
+        "verified",
+        "self_owned",
+        "public_domain",
+        "pending",
+        "missing",
+        "not_applicable"
+      ],
+      "title": "AuthorizationStatus",
+      "type": "string"
+    },
+    "DatasetLabel": {
+      "enum": [
+        "real",
+        "generated",
+        "hard_negative"
+      ],
+      "title": "DatasetLabel",
+      "type": "string"
+    },
+    "ForgeryType": {
+      "enum": [
+        "none",
+        "full_synthesis",
+        "face_swap",
+        "lip_sync",
+        "audio_clone",
+        "combined",
+        "other"
+      ],
+      "title": "ForgeryType",
+      "type": "string"
+    },
+    "SpatialAnnotation": {
+      "additionalProperties": false,
+      "properties": {
+        "timestamp": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Timestamp"
+        },
+        "x1": {
+          "minimum": 0,
+          "title": "X1",
+          "type": "number"
+        },
+        "y1": {
+          "minimum": 0,
+          "title": "Y1",
+          "type": "number"
+        },
+        "x2": {
+          "exclusiveMinimum": 0,
+          "title": "X2",
+          "type": "number"
+        },
+        "y2": {
+          "exclusiveMinimum": 0,
+          "title": "Y2",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x1",
+        "y1",
+        "x2",
+        "y2"
+      ],
+      "title": "SpatialAnnotation",
+      "type": "object"
+    },
+    "TemporalAnnotation": {
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "minimum": 0,
+          "title": "Start",
+          "type": "number"
+        },
+        "end": {
+          "exclusiveMinimum": 0,
+          "title": "End",
+          "type": "number"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "title": "TemporalAnnotation",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "sample_id": {
+      "title": "Sample Id",
+      "type": "string"
+    },
+    "media_path": {
+      "title": "Media Path",
+      "type": "string"
+    },
+    "label": {
+      "$ref": "#/$defs/DatasetLabel"
+    },
+    "generator": {
+      "title": "Generator",
+      "type": "string"
+    },
+    "generator_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Generator Version"
+    },
+    "forgery_type": {
+      "$ref": "#/$defs/ForgeryType",
+      "default": "none"
+    },
+    "source_person_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Person Id"
+    },
+    "authorization_status": {
+      "$ref": "#/$defs/AuthorizationStatus"
+    },
+    "duration_seconds": {
+      "exclusiveMinimum": 0,
+      "title": "Duration Seconds",
+      "type": "number"
+    },
+    "width": {
+      "exclusiveMinimum": 0,
+      "title": "Width",
+      "type": "integer"
+    },
+    "height": {
+      "exclusiveMinimum": 0,
+      "title": "Height",
+      "type": "integer"
+    },
+    "frame_rate": {
+      "exclusiveMinimum": 0,
+      "title": "Frame Rate",
+      "type": "number"
+    },
+    "has_audio": {
+      "title": "Has Audio",
+      "type": "boolean"
+    },
+    "compression": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Compression"
+    },
+    "beauty_filter": {
+      "default": false,
+      "title": "Beauty Filter",
+      "type": "boolean"
+    },
+    "subset": {
+      "default": "default",
+      "title": "Subset",
+      "type": "string"
+    },
+    "source_dataset": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Dataset"
+    },
+    "generation_date": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Generation Date"
+    },
+    "prompt_or_driver": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Prompt Or Driver"
+    },
+    "watermark": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Watermark"
+    },
+    "temporal_annotations": {
+      "items": {
+        "$ref": "#/$defs/TemporalAnnotation"
+      },
+      "title": "Temporal Annotations",
+      "type": "array"
+    },
+    "spatial_annotations": {
+      "items": {
+        "$ref": "#/$defs/SpatialAnnotation"
+      },
+      "title": "Spatial Annotations",
+      "type": "array"
+    },
+    "usable": {
+      "default": true,
+      "title": "Usable",
+      "type": "boolean"
+    },
+    "notes": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Notes"
+    }
+  },
+  "required": [
+    "sample_id",
+    "media_path",
+    "label",
+    "generator",
+    "authorization_status",
+    "duration_seconds",
+    "width",
+    "height",
+    "frame_rate",
+    "has_audio"
+  ],
+  "title": "内部评测集记录",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

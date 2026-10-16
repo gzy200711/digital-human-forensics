@@ -1,0 +1,33 @@
+{
+  "version": "2026-09-layered-v2",
+  "gray_zone_min": 0.3,
+  "gray_zone_max": 0.7,
+  "conflict_spread": 0.52,
+  "audio_escalation": {
+    "enabled": true,
+    "rule_id": "audio_antispoof_strong",
+    "min_score": 0.95,
+    "segment_threshold": 0.8,
+    "min_hit_ratio": 0.6,
+    "min_segments": 2
+  },
+  "signals": {
+    "render_chain": 0.08,
+    "visual_artifact": 0.26,
+    "digital_human": 0.16,
+    "temporal_consistency": 0.18,
+    "lip_sync": 0.12,
+    "audio_spoof": 0.16,
+    "beauty_filter": 0.0
+  },
+  "layers": {
+    "溯源层": 0.1,
+    "帧内视觉层": 0.26,
+    "数字人特征层": 0.16,
+    "时序层": 0.18,
+    "音视频一致性层": 0.14,
+    "音频层": 0.18
+  },
+  "unavailable_signal_policy": "renormalize",
+  "notes": "分层融合权重：先层内加权平均，再按层权重合并，避免同层相关信号重复计权。美颜/滤镜是干扰项而不是生成风险，权重固定为 0。生产版本应由带标签数据训练 stacking 融合器。"
+}

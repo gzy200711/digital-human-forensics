@@ -1,0 +1,95 @@
+[
+  {
+    "id": "fusion-pipeline",
+    "type": "fusion_pipeline",
+    "display_name": "多信号融合基线",
+    "version": "2026-09-layered",
+    "license": "internal"
+  },
+  {
+    "id": "metadata-rule",
+    "type": "metadata_rule",
+    "display_name": "元数据阳性规则",
+    "version": "1.0",
+    "license": "internal"
+  },
+  {
+    "id": "trivial-metadata",
+    "type": "trivial_metadata",
+    "display_name": "时长/分辨率/帧率平凡基线",
+    "version": "1.0",
+    "license": "internal"
+  },
+  {
+    "id": "demamba",
+    "type": "external_command",
+    "display_name": "DeMamba",
+    "version": "pinned-commit-required",
+    "license": "Apache-2.0",
+    "description": "视频生成检测基线；需本地仓库与权重。",
+    "command": [
+      "python",
+      "scripts/adapters/demamba.py",
+      "--media",
+      "{media_path}"
+    ],
+    "required_paths": [
+      "third_party/DeMamba",
+      "data/models/demamba"
+    ]
+  },
+  {
+    "id": "genconvit",
+    "type": "external_command",
+    "display_name": "GenConViT",
+    "version": "pinned-commit-required",
+    "license": "MIT",
+    "description": "换脸检测基线；需本地仓库与权重。",
+    "command": [
+      "python",
+      "scripts/adapters/genconvit.py",
+      "--media",
+      "{media_path}"
+    ],
+    "required_paths": [
+      "third_party/GenConViT",
+      "data/models/genconvit"
+    ]
+  },
+  {
+    "id": "auvire",
+    "type": "external_command",
+    "display_name": "AuViRe",
+    "version": "pinned-commit-required",
+    "license": "check-upstream",
+    "description": "音视频重构残差定位基线；需本地仓库与权重。",
+    "command": [
+      "python",
+      "scripts/adapters/auvire.py",
+      "--media",
+      "{media_path}"
+    ],
+    "required_paths": [
+      "third_party/AuViRe",
+      "data/models/auvire"
+    ]
+  },
+  {
+    "id": "aasist",
+    "type": "external_command",
+    "display_name": "AASIST",
+    "version": "pinned-commit-required",
+    "license": "MIT",
+    "description": "音频反欺骗基线；需本地仓库与权重。",
+    "command": [
+      "python",
+      "scripts/adapters/aasist.py",
+      "--media",
+      "{media_path}"
+    ],
+    "required_paths": [
+      "third_party/AASIST",
+      "data/models/aasist"
+    ]
+  }
+]

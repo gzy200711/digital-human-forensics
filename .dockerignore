@@ -1,0 +1,16 @@
+.git
+.gitignore
+.venv
+__pycache__
+.pytest_cache
+.ruff_cache
+node_modules
+.next
+data
+artifacts
+*.mp4
+*.mov
+*.wav
+*.onnx
+*.pth
+

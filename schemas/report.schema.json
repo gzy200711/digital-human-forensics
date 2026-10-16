@@ -1,0 +1,1424 @@
+{
+  "$defs": {
+    "ArtifactLinks": {
+      "additionalProperties": false,
+      "properties": {
+        "media_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Media Url"
+        },
+        "heatmap_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Heatmap Url"
+        },
+        "keyframe_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Keyframe Url"
+        },
+        "json_report_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Json Report Url"
+        },
+        "html_report_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Html Report Url"
+        }
+      },
+      "title": "ArtifactLinks",
+      "type": "object"
+    },
+    "Assessability": {
+      "additionalProperties": false,
+      "properties": {
+        "score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Score",
+          "type": "number"
+        },
+        "status": {
+          "$ref": "#/$defs/AssessabilityStatus"
+        },
+        "face_detected_ratio": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Face Detected Ratio"
+        },
+        "factors": {
+          "items": {
+            "$ref": "#/$defs/AssessabilityFactor"
+          },
+          "title": "Factors",
+          "type": "array"
+        },
+        "reasons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        }
+      },
+      "required": [
+        "score",
+        "status"
+      ],
+      "title": "Assessability",
+      "type": "object"
+    },
+    "AssessabilityFactor": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        },
+        "status": {
+          "enum": [
+            "good",
+            "warning",
+            "bad",
+            "unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "explanation": {
+          "title": "Explanation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "value",
+        "status",
+        "explanation"
+      ],
+      "title": "AssessabilityFactor",
+      "type": "object"
+    },
+    "AssessabilityStatus": {
+      "enum": [
+        "可鉴定",
+        "勉强可鉴定",
+        "不可鉴定"
+      ],
+      "title": "AssessabilityStatus",
+      "type": "string"
+    },
+    "CalibratedProbability": {
+      "additionalProperties": false,
+      "description": "只在声明的评测分布与阈值下成立的校准概率，不是事实确定性。",
+      "properties": {
+        "value": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        },
+        "is_calibrated": {
+          "default": false,
+          "title": "Is Calibrated",
+          "type": "boolean"
+        },
+        "calibration_version": {
+          "default": "unknown",
+          "title": "Calibration Version",
+          "type": "string"
+        },
+        "calibration_group": {
+          "default": "unknown",
+          "title": "Calibration Group",
+          "type": "string"
+        },
+        "distribution": {
+          "default": "未声明的评测分布",
+          "title": "Distribution",
+          "type": "string"
+        },
+        "confidence_interval": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence Interval"
+        },
+        "semantics": {
+          "default": "该数值只表示在声明的评测分布和阈值下的生成合成风险，不代表事实确定性。",
+          "title": "Semantics",
+          "type": "string"
+        }
+      },
+      "title": "CalibratedProbability",
+      "type": "object"
+    },
+    "EvidenceItem": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "signal": {
+          "title": "Signal",
+          "type": "string"
+        },
+        "display_name": {
+          "title": "Display Name",
+          "type": "string"
+        },
+        "layer": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Layer"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source"
+        },
+        "direction": {
+          "$ref": "#/$defs/SignalDirection"
+        },
+        "strength": {
+          "$ref": "#/$defs/SignalStrength"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Score"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "raw_value": {
+          "additionalProperties": true,
+          "title": "Raw Value",
+          "type": "object"
+        },
+        "explanation": {
+          "title": "Explanation",
+          "type": "string"
+        },
+        "time_range": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TimeRange"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "region": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceRegion"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "model": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceModel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "uncertainty": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uncertainty"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "available": {
+          "default": true,
+          "title": "Available",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "signal",
+        "display_name",
+        "direction",
+        "strength",
+        "explanation"
+      ],
+      "title": "EvidenceItem",
+      "type": "object"
+    },
+    "EvidenceModel": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        },
+        "license": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "License"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "title": "EvidenceModel",
+      "type": "object"
+    },
+    "EvidenceRegion": {
+      "additionalProperties": false,
+      "description": "证据作用的空间区域。坐标为归一化比例，未知时留空。",
+      "properties": {
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "x": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "X"
+        },
+        "y": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Y"
+        },
+        "width": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Width"
+        },
+        "height": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Height"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "title": "EvidenceRegion",
+      "type": "object"
+    },
+    "EvidenceReview": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "not_triggered",
+            "completed",
+            "unavailable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "triggered": {
+          "title": "Triggered",
+          "type": "boolean"
+        },
+        "provider": {
+          "title": "Provider",
+          "type": "string"
+        },
+        "model_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Version"
+        },
+        "license": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "License"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        },
+        "statements": {
+          "items": {
+            "$ref": "#/$defs/ReviewStatement"
+          },
+          "title": "Statements",
+          "type": "array"
+        },
+        "rejected_claim_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Rejected Claim Count",
+          "type": "integer"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "triggered",
+        "provider",
+        "summary",
+        "note"
+      ],
+      "title": "EvidenceReview",
+      "type": "object"
+    },
+    "GrayZone": {
+      "additionalProperties": false,
+      "properties": {
+        "minimum": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Minimum",
+          "type": "number"
+        },
+        "maximum": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Maximum",
+          "type": "number"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Score"
+        },
+        "in_gray_zone": {
+          "default": false,
+          "title": "In Gray Zone",
+          "type": "boolean"
+        },
+        "note": {
+          "default": "",
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "minimum",
+        "maximum"
+      ],
+      "title": "GrayZone",
+      "type": "object"
+    },
+    "MediaInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "filename": {
+          "title": "Filename",
+          "type": "string"
+        },
+        "mime_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mime Type"
+        },
+        "size_bytes": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size Bytes"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sha256"
+        },
+        "duration_seconds": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration Seconds"
+        },
+        "width": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Width"
+        },
+        "height": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Height"
+        },
+        "frame_rate": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Frame Rate"
+        },
+        "video_codec": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Video Codec"
+        },
+        "audio_codec": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Audio Codec"
+        },
+        "has_audio": {
+          "default": false,
+          "title": "Has Audio",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "filename"
+      ],
+      "title": "MediaInfo",
+      "type": "object"
+    },
+    "ModalityCoverage": {
+      "additionalProperties": false,
+      "description": "实际被有效分析的媒体比例；None 表示当前版本无法估计。",
+      "properties": {
+        "full_frame": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Full Frame"
+        },
+        "face": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Face"
+        },
+        "audio": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Audio"
+        },
+        "cross_modal": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cross Modal"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "title": "ModalityCoverage",
+      "type": "object"
+    },
+    "ModalityKey": {
+      "enum": [
+        "visual",
+        "audio",
+        "cross_modal",
+        "provenance"
+      ],
+      "title": "ModalityKey",
+      "type": "string"
+    },
+    "ModalityStatus": {
+      "enum": [
+        "available",
+        "partial",
+        "unavailable"
+      ],
+      "title": "ModalityStatus",
+      "type": "string"
+    },
+    "ModalityVerdict": {
+      "additionalProperties": false,
+      "description": "模态级结论。模态之间方向不同不构成冲突。",
+      "properties": {
+        "modality": {
+          "$ref": "#/$defs/ModalityKey"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "verdict": {
+          "$ref": "#/$defs/Verdict"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Score"
+        },
+        "coverage": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Coverage"
+        },
+        "status": {
+          "$ref": "#/$defs/ModalityStatus",
+          "default": "available"
+        },
+        "signal_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Signal Ids",
+          "type": "array"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "modality",
+        "label",
+        "verdict",
+        "summary"
+      ],
+      "title": "ModalityVerdict",
+      "type": "object"
+    },
+    "ModelSnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "registry_version": {
+          "title": "Registry Version",
+          "type": "string"
+        },
+        "captured_at": {
+          "format": "date-time",
+          "title": "Captured At",
+          "type": "string"
+        },
+        "is_research_only": {
+          "default": true,
+          "title": "Is Research Only",
+          "type": "boolean"
+        },
+        "note": {
+          "default": "",
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "registry_version"
+      ],
+      "title": "ModelSnapshot",
+      "type": "object"
+    },
+    "ModelVersion": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        },
+        "license": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "License"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "title": "ModelVersion",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/ProvenanceCheck"
+          },
+          "title": "Checks",
+          "type": "array"
+        },
+        "explicit_ai_indicators": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Explicit Ai Indicators",
+          "type": "array"
+        },
+        "status": {
+          "default": "无声明",
+          "enum": [
+            "阳性",
+            "无声明",
+            "未检查"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "note": {
+          "default": "元数据未命中不能作为真实性的阴性证据。",
+          "title": "Note",
+          "type": "string"
+        },
+        "limitation": {
+          "default": "缺失、损坏或被清除的来源声明不能作为真实性证据；阳性声明也需要验证签名与信任链。",
+          "title": "Limitation",
+          "type": "string"
+        }
+      },
+      "title": "Provenance",
+      "type": "object"
+    },
+    "ProvenanceCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ProvenanceStatus"
+        },
+        "positive": {
+          "default": false,
+          "title": "Positive",
+          "type": "boolean"
+        },
+        "details": {
+          "additionalProperties": true,
+          "title": "Details",
+          "type": "object"
+        },
+        "explanation": {
+          "title": "Explanation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "status",
+        "explanation"
+      ],
+      "title": "ProvenanceCheck",
+      "type": "object"
+    },
+    "ProvenanceStatus": {
+      "enum": [
+        "阳性",
+        "阴性",
+        "未检查",
+        "不可用"
+      ],
+      "title": "ProvenanceStatus",
+      "type": "string"
+    },
+    "ReviewStatement": {
+      "additionalProperties": false,
+      "properties": {
+        "claim": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Claim",
+          "type": "string"
+        },
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "kind": {
+          "enum": [
+            "生成风险",
+            "真实性提示",
+            "不确定性",
+            "质量限制"
+          ],
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "claim",
+        "evidence_ids",
+        "kind"
+      ],
+      "title": "ReviewStatement",
+      "type": "object"
+    },
+    "SignalDirection": {
+      "enum": [
+        "指向生成",
+        "指向真实",
+        "中性"
+      ],
+      "title": "SignalDirection",
+      "type": "string"
+    },
+    "SignalStrength": {
+      "enum": [
+        "弱",
+        "中",
+        "强"
+      ],
+      "title": "SignalStrength",
+      "type": "string"
+    },
+    "ThresholdPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "policy_id": {
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "gray_zone": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Gray Zone",
+          "type": "array"
+        },
+        "target_fprs": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Target Fprs",
+          "type": "array"
+        },
+        "real_negative_samples": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Real Negative Samples"
+        },
+        "fpr_evidence_status": {
+          "default": "unknown",
+          "enum": [
+            "verified",
+            "insufficient",
+            "unknown"
+          ],
+          "title": "Fpr Evidence Status",
+          "type": "string"
+        },
+        "statement": {
+          "title": "Statement",
+          "type": "string"
+        }
+      },
+      "required": [
+        "policy_id",
+        "source",
+        "gray_zone",
+        "statement"
+      ],
+      "title": "ThresholdPolicy",
+      "type": "object"
+    },
+    "TimeRange": {
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "minimum": 0,
+          "title": "Start",
+          "type": "number"
+        },
+        "end": {
+          "minimum": 0,
+          "title": "End",
+          "type": "number"
+        },
+        "score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Score",
+          "type": "number"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end",
+        "score",
+        "reason"
+      ],
+      "title": "TimeRange",
+      "type": "object"
+    },
+    "Verdict": {
+      "enum": [
+        "可信",
+        "无法确定",
+        "疑似生成合成"
+      ],
+      "title": "Verdict",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "1.1",
+      "enum": [
+        "1.0",
+        "1.1"
+      ],
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "report_id": {
+      "title": "Report Id",
+      "type": "string"
+    },
+    "job_id": {
+      "title": "Job Id",
+      "type": "string"
+    },
+    "generated_at": {
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "media": {
+      "$ref": "#/$defs/MediaInfo"
+    },
+    "verdict": {
+      "$ref": "#/$defs/Verdict"
+    },
+    "confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "calibrated_score": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Calibrated Score",
+      "type": "number"
+    },
+    "calibrated_probability": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CalibratedProbability"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "summary": {
+      "title": "Summary",
+      "type": "string"
+    },
+    "modality_verdicts": {
+      "items": {
+        "$ref": "#/$defs/ModalityVerdict"
+      },
+      "title": "Modality Verdicts",
+      "type": "array"
+    },
+    "coverage": {
+      "$ref": "#/$defs/ModalityCoverage"
+    },
+    "gray_zone": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/GrayZone"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "abstention_reasons": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Abstention Reasons",
+      "type": "array"
+    },
+    "abstention_codes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Abstention Codes",
+      "type": "array"
+    },
+    "time_ranges": {
+      "items": {
+        "$ref": "#/$defs/TimeRange"
+      },
+      "title": "Time Ranges",
+      "type": "array"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/EvidenceItem"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "review": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/EvidenceReview"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "assessability": {
+      "$ref": "#/$defs/Assessability"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "recommended_action": {
+      "enum": [
+        "通过",
+        "人工复核",
+        "拦截并允许申诉"
+      ],
+      "title": "Recommended Action",
+      "type": "string"
+    },
+    "artifacts": {
+      "$ref": "#/$defs/ArtifactLinks"
+    },
+    "model_versions": {
+      "items": {
+        "$ref": "#/$defs/ModelVersion"
+      },
+      "title": "Model Versions",
+      "type": "array"
+    },
+    "model_snapshot": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ModelSnapshot"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "threshold_policy": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ThresholdPolicy"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "audit_trace_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Audit Trace Id"
+    },
+    "processing": {
+      "additionalProperties": true,
+      "title": "Processing",
+      "type": "object"
+    }
+  },
+  "required": [
+    "report_id",
+    "job_id",
+    "media",
+    "verdict",
+    "confidence",
+    "calibrated_score",
+    "summary",
+    "assessability",
+    "provenance",
+    "recommended_action"
+  ],
+  "title": "数字人鉴别报告",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

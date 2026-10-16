@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.dhfp.web</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>__NODE__</string>
+    <string>.next/standalone/server.js</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>__PROJECT_DIR__/apps/web</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>__PATH__</string>
+    <key>NODE_ENV</key>
+    <string>production</string>
+    <key>API_BASE_URL</key>
+    <string>http://127.0.0.1:8000</string>
+    <key>PUBLIC_ACCESS_USER</key>
+    <string>__PUBLIC_ACCESS_USER__</string>
+    <key>PUBLIC_ACCESS_PASSWORD</key>
+    <string>__PUBLIC_ACCESS_PASSWORD__</string>
+    <key>HOSTNAME</key>
+    <string>0.0.0.0</string>
+    <key>PORT</key>
+    <string>3000</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+  <key>StandardOutPath</key>
+  <string>__LOG_DIR__/web.log</string>
+  <key>StandardErrorPath</key>
+  <string>__LOG_DIR__/web.err.log</string>
+</dict>
+</plist>

@@ -1,0 +1,47 @@
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ffmpeg libglib2.0-0 curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY pyproject.toml README.md ./
+COPY apps ./apps
+COPY src ./src
+COPY configs ./configs
+COPY schemas ./schemas
+COPY scripts ./scripts
+
+RUN pip install --upgrade pip \
+    && pip install ".[onnx]"
+
+# c2patool 负责 C2PA / Content Credentials 清单核验。官方只提供 x86_64 Linux
+# 二进制，其他架构构建时会跳过，运行时该项会明确报告“不可用”而不是静默通过。
+ARG C2PATOOL_VERSION=0.27.22
+RUN set -eu; \
+    arch="$(dpkg --print-architecture)"; \
+    if [ "${arch}" = "amd64" ]; then \
+        tarball="c2patool-v${C2PATOOL_VERSION}-x86_64-unknown-linux-gnu.tar.gz"; \
+        if curl -fsSL -o /tmp/c2patool.tar.gz \
+            "https://github.com/contentauth/c2pa-rs/releases/download/c2patool-v${C2PATOOL_VERSION}/${tarball}" \
+            && tar -xzf /tmp/c2patool.tar.gz -C /usr/local/bin --strip-components=1 "c2patool/c2patool"; then \
+            chmod +x /usr/local/bin/c2patool; \
+            c2patool --version; \
+        else \
+            echo "warning: c2patool 下载失败，容器内 C2PA 检查会报告不可用"; \
+        fi; \
+        rm -f /tmp/c2patool.tar.gz; \
+    else \
+        echo "warning: c2patool 没有官方 linux/${arch} 构建，容器内 C2PA 检查会报告不可用"; \
+    fi
+
+RUN mkdir -p /data/storage /data/forensics
+
+EXPOSE 8000
+
+CMD ["uvicorn", "apps.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
