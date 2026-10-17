@@ -4,10 +4,12 @@ import {
   CircleGauge,
   FileCheck2,
   Fingerprint,
+  History,
   ScanFace,
   Scale,
   Waves,
 } from "lucide-react";
+import Link from "next/link";
 
 import { AppHeader } from "@/components/app-header";
 import { SubmitForm } from "@/components/submit-form";
@@ -53,10 +55,16 @@ export default function HomePage() {
               每条证据都带 ID、时间范围、区域、模型版本与不确定度。
             </p>
           </div>
-          <span className="badge badge-brand">
-            <Activity size={13} />
-            异步检测
-          </span>
+          <div className="page-header-actions">
+            <Link className="button button-secondary" href="/history">
+              <History size={15} />
+              历史检测
+            </Link>
+            <span className="badge badge-brand">
+              <Activity size={13} />
+              异步检测
+            </span>
+          </div>
         </div>
 
         <div className="submit-grid">

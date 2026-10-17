@@ -1,4 +1,9 @@
-import type { ForensicReport, JobStatus } from "@/types/report";
+import type {
+  ForensicReport,
+  JobHistoryResponse,
+  JobStatus,
+  Verdict,
+} from "@/types/report";
 
 export class ApiError extends Error {
   status: number;
@@ -109,6 +114,30 @@ export async function getJob(jobId: string): Promise<JobStatus> {
   });
   if (!response.ok) throw await parseError(response);
   return response.json() as Promise<JobStatus>;
+}
+
+export async function listJobs(
+  input: {
+    query?: string;
+    status?: JobStatus["status"];
+    verdict?: Verdict;
+    limit?: number;
+    offset?: number;
+  } = {},
+  signal?: AbortSignal,
+): Promise<JobHistoryResponse> {
+  const params = new URLSearchParams();
+  if (input.query?.trim()) params.set("q", input.query.trim());
+  if (input.status) params.set("status", input.status);
+  if (input.verdict) params.set("verdict", input.verdict);
+  params.set("limit", String(input.limit ?? 20));
+  params.set("offset", String(input.offset ?? 0));
+  const response = await fetch(`/api/v1/jobs?${params.toString()}`, {
+    cache: "no-store",
+    signal,
+  });
+  if (!response.ok) throw await parseError(response);
+  return response.json() as Promise<JobHistoryResponse>;
 }
 
 export async function getReport(jobId: string): Promise<ForensicReport> {

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import asyncio
 import mimetypes
+from datetime import UTC, datetime
+from math import isfinite
 from pathlib import Path
 from typing import BinaryIO
 from urllib.parse import unquote, urlparse
@@ -15,6 +17,7 @@ from fastapi import (
     Form,
     Header,
     HTTPException,
+    Query,
     Request,
     UploadFile,
     status,
@@ -26,7 +29,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from apps.api.api.dependencies import get_object_store, get_session
 from apps.api.config import get_settings
 from apps.api.repository import JobRepository
-from apps.api.schemas import AppealCreate, AppealResponse, JobCreateResponse, JobStatusResponse
+from apps.api.schemas import (
+    AppealCreate,
+    AppealResponse,
+    JobCreateResponse,
+    JobHistoryItem,
+    JobHistoryResponse,
+    JobStatusResponse,
+    JobStatusValue,
+    VerdictValue,
+)
 from apps.api.services.pipeline import validate_remote_url
 from apps.api.services.queue import enqueue_job
 from apps.api.services.storage import (
@@ -223,6 +235,60 @@ async def create_job(
         status_url=f"/v1/jobs/{job.id}",
         report_url=f"/v1/jobs/{job.id}/report",
     )
+
+
+@router.get("/jobs", response_model=JobHistoryResponse)
+async def list_jobs(
+    response: Response,
+    q: str | None = Query(default=None, max_length=200),
+    job_status: JobStatusValue | None = Query(default=None, alias="status"),
+    verdict: VerdictValue | None = Query(default=None),
+    limit: int = Query(default=20, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    session: AsyncSession = Depends(get_session),
+) -> JobHistoryResponse:
+    repository = JobRepository(session)
+    rows, total = await repository.list_jobs(
+        query=q,
+        status=job_status,
+        verdict=verdict,
+        limit=limit,
+        offset=offset,
+    )
+    items = []
+    for job, report in rows:
+        payload = report.payload if report is not None else {}
+        items.append(
+            JobHistoryItem(
+                job_id=job.id,
+                status=job.status,  # type: ignore[arg-type]
+                progress=job.progress,
+                stage=job.stage,
+                source_type=job.source_type,  # type: ignore[arg-type]
+                original_filename=job.original_filename,
+                mime_type=job.mime_type,
+                size_bytes=job.size_bytes,
+                error_code=job.error_code,
+                error_message=job.error_message,
+                created_at=_ensure_utc(job.created_at),
+                updated_at=_ensure_utc(job.updated_at),
+                completed_at=_ensure_utc(job.completed_at),
+                expires_at=_ensure_utc(job.expires_at),
+                report_ready=report is not None,
+                verdict=report.verdict if report is not None else None,  # type: ignore[arg-type]
+                confidence=_optional_float(payload.get("confidence"))
+                if report is not None
+                else None,
+                calibrated_score=report.calibrated_score if report is not None else None,
+                recommended_action=(
+                    str(payload["recommended_action"])
+                    if report is not None and payload.get("recommended_action")
+                    else None
+                ),
+            )
+        )
+    response.headers["Cache-Control"] = "private, no-store"
+    return JobHistoryResponse(items=items, total=total, limit=limit, offset=offset)
 
 
 @router.get("/jobs/{job_id}", response_model=JobStatusResponse)
@@ -449,3 +515,18 @@ def _client_ip(request: Request) -> str | None:
     if forwarded:
         return forwarded.split(",", maxsplit=1)[0].strip()
     return request.client.host if request.client else None
+
+
+def _ensure_utc(value: datetime | None) -> datetime | None:
+    if value is None:
+        return None
+    if value.tzinfo is None:
+        return value.replace(tzinfo=UTC)
+    return value.astimezone(UTC)
+
+
+def _optional_float(value: object) -> float | None:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    parsed = float(value)
+    return parsed if isfinite(parsed) else None

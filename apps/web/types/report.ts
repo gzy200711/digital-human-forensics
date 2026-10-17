@@ -217,3 +217,32 @@ export interface JobStatus {
   expires_at: string | null;
   report_ready: boolean;
 }
+
+export interface JobHistoryItem {
+  job_id: string;
+  status: "queued" | "processing" | "completed" | "failed";
+  progress: number;
+  stage: string;
+  source_type: "upload" | "url";
+  original_filename: string;
+  mime_type: string | null;
+  size_bytes: number | null;
+  error_code: string | null;
+  error_message: string | null;
+  created_at: string;
+  updated_at: string;
+  completed_at: string | null;
+  expires_at: string | null;
+  report_ready: boolean;
+  verdict: Verdict | null;
+  confidence: number | null;
+  calibrated_score: number | null;
+  recommended_action: string | null;
+}
+
+export interface JobHistoryResponse {
+  items: JobHistoryItem[];
+  total: number;
+  limit: number;
+  offset: number;
+}

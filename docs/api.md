@@ -41,6 +41,48 @@ Base URL：`http://localhost:8000`
 
 失败任务返回稳定的 `error_code` 和可读 `error_message`。
 
+## 查询检测历史
+
+`GET /v1/jobs`
+
+按提交时间倒序返回任务摘要和已完成报告的综合判定。查询参数：
+
+| 参数 | 必填 | 说明 |
+|---|---:|---|
+| `q` | 否 | 文件名模糊搜索，或完整任务 ID |
+| `status` | 否 | `queued` / `processing` / `completed` / `failed` |
+| `verdict` | 否 | `可信` / `无法确定` / `疑似生成合成` |
+| `limit` | 否 | 每页 1–100 条，默认 20 |
+| `offset` | 否 | 从 0 开始的偏移量 |
+
+返回：
+
+```json
+{
+  "items": [
+    {
+      "job_id": "uuid",
+      "status": "completed",
+      "progress": 100,
+      "stage": "检测完成",
+      "source_type": "upload",
+      "original_filename": "sample.mp4",
+      "size_bytes": 123456,
+      "created_at": "2026-10-17T08:00:00Z",
+      "completed_at": "2026-10-17T08:00:42Z",
+      "report_ready": true,
+      "verdict": "无法确定",
+      "confidence": 0.64,
+      "calibrated_score": 0.58,
+      "recommended_action": "人工复核"
+    }
+  ],
+  "total": 1,
+  "limit": 20,
+  "offset": 0
+}
+```
+
 ## 获取报告
 
 `GET /v1/jobs/{job_id}/report`

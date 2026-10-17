@@ -100,6 +100,48 @@ def test_upload_flow(api_client, synthetic_video) -> None:
     )
     assert appeal_response.status_code == 201
 
+    history_response = api_client.get("/v1/jobs", params={"limit": 20, "offset": 0})
+    assert history_response.status_code == 200
+    assert history_response.headers["cache-control"] == "private, no-store"
+    history = history_response.json()
+    assert history["total"] == 1
+    assert history["limit"] == 20
+    assert history["offset"] == 0
+    history_item = history["items"][0]
+    assert history_item["job_id"] == job_id
+    assert history_item["original_filename"] == synthetic_video.name
+    assert history_item["status"] == "completed"
+    assert history_item["report_ready"] is True
+    assert history_item["verdict"] == report["verdict"]
+    assert history_item["confidence"] == report["confidence"]
+
+    search_response = api_client.get(
+        "/v1/jobs",
+        params={"q": synthetic_video.stem.upper(), "status": "completed"},
+    )
+    assert search_response.status_code == 200
+    assert search_response.json()["total"] == 1
+
+    verdict_filter_response = api_client.get(
+        "/v1/jobs",
+        params={"verdict": report["verdict"]},
+    )
+    assert verdict_filter_response.status_code == 200
+    assert verdict_filter_response.json()["total"] == 1
+
+    missing_filter_response = api_client.get(
+        "/v1/jobs",
+        params={"status": "failed"},
+    )
+    assert missing_filter_response.status_code == 200
+    assert missing_filter_response.json()["total"] == 0
+
+    invalid_filter_response = api_client.get(
+        "/v1/jobs",
+        params={"status": "unknown"},
+    )
+    assert invalid_filter_response.status_code == 422
+
 
 def test_queue_failure_returns_503(
     api_client,

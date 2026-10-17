@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
-from sqlalchemy import delete, select, update
+from sqlalchemy import delete, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from apps.api.models import Appeal, AuditLog, Job, MediaRetentionRecord, ReportRecord
@@ -42,6 +42,54 @@ class JobRepository:
     async def get_job(self, job_id: str) -> Job | None:
         result = await self.session.execute(select(Job).where(Job.id == job_id))
         return result.scalar_one_or_none()
+
+    async def list_jobs(
+        self,
+        *,
+        query: str | None = None,
+        status: str | None = None,
+        verdict: str | None = None,
+        limit: int = 20,
+        offset: int = 0,
+    ) -> tuple[list[tuple[Job, ReportRecord | None]], int]:
+        filters = []
+        normalized_query = query.strip() if query else ""
+        if normalized_query:
+            lowered_query = normalized_query.lower()
+            filters.append(
+                or_(
+                    func.lower(Job.original_filename).contains(
+                        lowered_query,
+                        autoescape=True,
+                    ),
+                    func.lower(Job.id) == lowered_query,
+                )
+            )
+        if status:
+            filters.append(Job.status == status)
+        if verdict:
+            filters.append(ReportRecord.verdict == verdict)
+
+        joined = select(Job, ReportRecord).outerjoin(
+            ReportRecord,
+            ReportRecord.job_id == Job.id,
+        )
+        count_statement = (
+            select(func.count(Job.id))
+            .select_from(Job)
+            .outerjoin(ReportRecord, ReportRecord.job_id == Job.id)
+        )
+        if filters:
+            joined = joined.where(*filters)
+            count_statement = count_statement.where(*filters)
+
+        rows = await self.session.execute(
+            joined.order_by(Job.created_at.desc(), Job.id.desc())
+            .limit(limit)
+            .offset(offset)
+        )
+        total = await self.session.scalar(count_statement)
+        return [(row[0], row[1]) for row in rows.all()], int(total or 0)
 
     async def update_job(self, job_id: str, **values: Any) -> Job | None:
         values["updated_at"] = datetime.now(UTC)
